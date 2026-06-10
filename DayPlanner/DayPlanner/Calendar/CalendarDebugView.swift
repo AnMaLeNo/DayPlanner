@@ -42,6 +42,7 @@ struct CalendarDebugView: View {
                 }
             }
         }
+        .frame(minWidth: 720, minHeight: 560)
     }
 
     private var permissionSection: some View {
