@@ -52,23 +52,36 @@ Chaque étape est **testable seule** avant de passer à la suivante.
 
 ---
 
-## Étape 2 — EventKit : lire le calendrier → créneaux libres
+## Étape 2 — EventKit : lire le calendrier → créneaux libres 🟡
 
 **But :** obtenir les **trous** réels de la journée/semaine, matière première de l'algo.
 
 **Sous-tâches**
-- [ ] Ajouter la permission calendrier (`NSCalendarsUsageDescription` dans Info.plist).
-- [ ] Demander l'autorisation EventKit au runtime + gérer le refus proprement.
-- [ ] Lire les événements sur une plage de dates (ex. aujourd'hui → deadline).
-- [ ] Écrire une fonction `freeSlots(in:range, settings:)` qui calcule les créneaux libres :
+- [x] Ajouter la permission calendrier (`NSCalendarsFullAccessUsageDescription` + fallback
+      `NSCalendarsUsageDescription` dans l'Info.plist généré).
+- [x] Ajouter l'entitlement macOS sandbox `com.apple.security.personal-information.calendars`.
+- [x] Demander l'autorisation EventKit au runtime + gérer le refus proprement.
+- [x] Lire les événements sur une plage de dates (aujourd'hui dans la vue debug).
+- [x] Écrire une fonction `freeSlots(in:range, settings:)` qui calcule les créneaux libres :
       événements occupés + hors heures de travail + jours non travaillés = exclus.
-- [ ] Renvoyer une liste de créneaux libres `[(start, end)]` exploitable par l'algo.
+- [x] Renvoyer une liste de créneaux libres `FreeSlot(start, end)` exploitable par l'algo.
+- [x] Ajouter une vue temporaire `CalendarDebugView` pour vérifier permission, événements et
+      créneaux libres.
 
 **DoD — c'est fini quand…**
-- L'app obtient l'autorisation et lit les vrais événements du calendrier de test.
-- `freeSlots(...)` renvoie des créneaux corrects sur des cas testés (journée vide, journée
+- [ ] L'app obtient l'autorisation et lit les vrais événements du calendrier de test.
+- [x] `freeSlots(...)` renvoie des créneaux corrects sur des cas testés (journée vide, journée
   pleine, événements qui se chevauchent, hors heures de travail).
-- Le calendrier n'est **jamais** copié dans SwiftData (lecture seule confirmée).
+- [x] Le calendrier n'est **jamais** copié dans SwiftData (lecture seule confirmée).
+
+**Validation réelle — 2026-06-10**
+- RED : tests `FreeSlotCalculatorTests` échouaient car `SchedulingRules`, `CalendarEvent`,
+  `FreeSlot`, `FreeSlotCalculator` n'existaient pas.
+- GREEN : `xcodebuild ... test` → **TEST SUCCEEDED** après implémentation du calcul.
+- Bundle macOS vérifié : Info.plist contient les clés calendrier et le codesign contient
+  l'entitlement `com.apple.security.personal-information.calendars`.
+- Reste à valider manuellement par Antoine : ouvrir la vue **Calendrier**, accepter la permission,
+  puis cliquer **Lire aujourd'hui** avec un calendrier réel.
 
 ---
 
