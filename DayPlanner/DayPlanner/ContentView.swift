@@ -20,6 +20,18 @@ struct ContentView: View {
     var body: some View {
         NavigationSplitView {
             List {
+                Section("Actions de debug") {
+                    Button {
+                        isShowingCalendarDebug = true
+                    } label: {
+                        Label("Ouvrir le debug calendrier", systemImage: "calendar")
+                    }
+
+                    Button(action: addSampleGoal) {
+                        Label("Ajouter un objectif de test", systemImage: "plus")
+                    }
+                }
+
                 Section("Objectifs") {
                     if goals.isEmpty {
                         ContentUnavailableView(
@@ -47,21 +59,6 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("DayPlanner")
-            .toolbar {
-                ToolbarItem {
-                    Button {
-                        isShowingCalendarDebug = true
-                    } label: {
-                        Label("Calendrier", systemImage: "calendar")
-                    }
-                }
-
-                ToolbarItem {
-                    Button(action: addSampleGoal) {
-                        Label("Ajouter", systemImage: "plus")
-                    }
-                }
-            }
         } detail: {
             Text("Sélectionne un objectif")
                 .foregroundStyle(.secondary)
