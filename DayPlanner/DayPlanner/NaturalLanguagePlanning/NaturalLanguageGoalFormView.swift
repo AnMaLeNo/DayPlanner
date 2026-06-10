@@ -22,94 +22,20 @@ struct NaturalLanguageGoalFormView: View {
 
     var body: some View {
         NavigationStack {
-            Form {
-                Section("Phrase naturelle") {
-                    TextEditor(text: $rawInput)
-                        .frame(minHeight: 90)
-                        .accessibilityIdentifier("natural-language-input")
-                    Text("Exemple : Je dois préparer un entretien full-stack dans un mois.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
+            ScrollView {
+                VStack(alignment: .leading, spacing: 18) {
+                    phraseSection
+                    analysisSection
 
-                Section("Analyse Apple Intelligence") {
-                    Text(extractor.availability().userMessage)
-                        .foregroundStyle(extractor.availability().canExtract ? Color.secondary : Color.red)
-
-                    if !statusMessage.isEmpty {
-                        Text(statusMessage)
-                            .foregroundStyle(.secondary)
-                    }
-                    if !errorMessage.isEmpty {
-                        Text(errorMessage)
-                            .foregroundStyle(.red)
-                    }
-
-                    Button {
-                        analyze()
-                    } label: {
-                        if isAnalyzing {
-                            ProgressView()
-                        } else {
-                            Label("Analyser", systemImage: "sparkles")
-                        }
-                    }
-                    .disabled(isAnalyzing || rawInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                    .accessibilityIdentifier("natural-language-analyze-button")
-                }
-
-                if !drafts.isEmpty {
-                    Section("Objectif proposé") {
-                        TextField("Titre de l'objectif", text: $drafts[0].goalTitle)
-                        DatePicker(
-                            "Deadline",
-                            selection: Binding(
-                                get: { drafts[0].deadline ?? Date() },
-                                set: { drafts[0].deadline = $0 }
-                            ),
-                            displayedComponents: .date
-                        )
-                        Toggle(
-                            "Deadline connue",
-                            isOn: Binding(
-                                get: { drafts[0].deadline != nil },
-                                set: { hasDeadline in
-                                    drafts[0].deadline = hasDeadline ? Date() : nil
-                                }
-                            )
-                        )
-                    }
-
-                    Section("Tâches proposées") {
-                        ForEach(drafts.indices, id: \.self) { index in
-                            DisclosureGroup(drafts[index].taskTitle.isEmpty ? "Tâche \(index + 1)" : drafts[index].taskTitle) {
-                                TextField("Titre", text: $drafts[index].taskTitle)
-                                TextField("Type", text: $drafts[index].taskTypeName)
-                                HStack {
-                                    Text("Durée totale")
-                                    Spacer()
-                                    TextField("Heures", value: $drafts[index].estimatedHours, format: .number)
-                                        .frame(width: 80)
-                                    Text("h")
-                                }
-                                HStack {
-                                    Text("Session")
-                                    Spacer()
-                                    TextField("Minutes", value: $drafts[index].sessionMinutes, format: .number)
-                                        .frame(width: 80)
-                                    Text("min")
-                                }
-                                Picker("Priorité", selection: $drafts[index].priority) {
-                                    Text("Basse").tag(Priority.low)
-                                    Text("Moyenne").tag(Priority.medium)
-                                    Text("Haute").tag(Priority.high)
-                                }
-                                TextField("Pourquoi / notes", text: $drafts[index].reasoning, axis: .vertical)
-                            }
-                        }
+                    if !drafts.isEmpty {
+                        proposedGoalSection
+                        proposedTasksSection
                     }
                 }
+                .padding(24)
+                .frame(maxWidth: 760, alignment: .topLeading)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .navigationTitle("Créer depuis une phrase")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -122,7 +48,122 @@ struct NaturalLanguageGoalFormView: View {
                 }
             }
         }
-        .frame(minWidth: 560, minHeight: 680)
+        .frame(minWidth: 620, minHeight: 700)
+    }
+
+    private var phraseSection: some View {
+        GroupBox("Phrase naturelle") {
+            VStack(alignment: .leading, spacing: 8) {
+                TextEditor(text: $rawInput)
+                    .frame(minHeight: 90)
+                    .accessibilityIdentifier("natural-language-input")
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 6)
+                            .stroke(Color.secondary.opacity(0.25))
+                    }
+
+                Text("Exemple : Je dois préparer un entretien full-stack dans un mois.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.top, 4)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var analysisSection: some View {
+        GroupBox("Analyse Apple Intelligence") {
+            VStack(alignment: .leading, spacing: 10) {
+                Text(extractor.availability().userMessage)
+                    .foregroundStyle(extractor.availability().canExtract ? Color.secondary : Color.red)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                if !statusMessage.isEmpty {
+                    Text(statusMessage)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                if !errorMessage.isEmpty {
+                    Text(errorMessage)
+                        .foregroundStyle(.red)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                Button {
+                    analyze()
+                } label: {
+                    if isAnalyzing {
+                        ProgressView()
+                    } else {
+                        Label("Analyser", systemImage: "sparkles")
+                    }
+                }
+                .disabled(isAnalyzing || rawInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                .accessibilityIdentifier("natural-language-analyze-button")
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.top, 4)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var proposedGoalSection: some View {
+        GroupBox("Objectif proposé") {
+            VStack(alignment: .leading, spacing: 12) {
+                labeledTextField("Titre de l'objectif", text: $drafts[0].goalTitle)
+
+                Toggle(
+                    "Deadline connue",
+                    isOn: Binding(
+                        get: { drafts[0].deadline != nil },
+                        set: { hasDeadline in
+                            drafts[0].deadline = hasDeadline ? Date() : nil
+                        }
+                    )
+                )
+
+                if drafts[0].deadline != nil {
+                    DatePicker(
+                        "Deadline",
+                        selection: Binding(
+                            get: { drafts[0].deadline ?? Date() },
+                            set: { drafts[0].deadline = $0 }
+                        ),
+                        displayedComponents: .date
+                    )
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.top, 4)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var proposedTasksSection: some View {
+        GroupBox("Tâches proposées") {
+            VStack(alignment: .leading, spacing: 12) {
+                ForEach(drafts.indices, id: \.self) { index in
+                    ProposedTaskEditor(
+                        index: index,
+                        draft: $drafts[index]
+                    )
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.top, 4)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func labeledTextField(_ label: String, text: Binding<String>) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(label)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            TextField(label, text: text)
+                .textFieldStyle(.roundedBorder)
+        }
     }
 
     private func analyze() {
@@ -159,6 +200,91 @@ struct NaturalLanguageGoalFormView: View {
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+}
+
+private struct ProposedTaskEditor: View {
+    let index: Int
+    @Binding var draft: ManualGoalDraft
+
+    var body: some View {
+        DisclosureGroup {
+            VStack(alignment: .leading, spacing: 12) {
+                labeledTextField("Titre", text: $draft.taskTitle)
+                labeledTextField("Type", text: $draft.taskTypeName)
+
+                HStack(alignment: .firstTextBaseline, spacing: 12) {
+                    numericField("Durée totale", value: $draft.estimatedHours, unit: "h")
+                    numericField("Session", value: $draft.sessionMinutes, unit: "min")
+                }
+
+                Picker("Priorité", selection: $draft.priority) {
+                    Text("Basse").tag(Priority.low)
+                    Text("Moyenne").tag(Priority.medium)
+                    Text("Haute").tag(Priority.high)
+                }
+                .pickerStyle(.segmented)
+
+                labeledTextField("Pourquoi / notes", text: $draft.reasoning, axis: .vertical)
+            }
+            .padding(.top, 12)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        } label: {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Text("Tâche \(index + 1)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Text(draft.taskTitle.isEmpty ? "Sans titre" : draft.taskTitle)
+                    .font(.headline)
+                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 0)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(12)
+        .background(.background, in: RoundedRectangle(cornerRadius: 10))
+        .overlay {
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(Color.secondary.opacity(0.2))
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func labeledTextField(
+        _ label: String,
+        text: Binding<String>,
+        axis: Axis = .horizontal
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(label)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            TextField(label, text: text, axis: axis)
+                .textFieldStyle(.roundedBorder)
+                .lineLimit(axis == .vertical ? 2...5 : 1...1)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func numericField(
+        _ label: String,
+        value: Binding<Double>,
+        unit: String
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(label)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            HStack(spacing: 6) {
+                TextField(label, value: value, format: .number)
+                    .textFieldStyle(.roundedBorder)
+                    .frame(width: 90)
+                Text(unit)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
