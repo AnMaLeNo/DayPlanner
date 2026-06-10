@@ -2,7 +2,8 @@
 //  DayPlannerApp.swift
 //  DayPlanner
 //
-//  Created by Antoine monot on 10/06/2026.
+//  App macOS DayPlanner.
+//  Configure le container SwiftData avec les vrais modèles du domaine.
 //
 
 import SwiftUI
@@ -12,7 +13,11 @@ import SwiftData
 struct DayPlannerApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            Goal.self,
+            PlanTask.self,
+            Block.self,
+            TaskType.self,
+            Settings.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 

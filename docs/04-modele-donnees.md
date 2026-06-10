@@ -10,11 +10,15 @@ ce que produit l'algo :
 
 ```
 Goal  (Objectif formulé par l'utilisateur)
- └─ Task  (Tâche DÉDUITE par le LLM)  ──référence──▶  TaskType (vocabulaire dynamique)
+ └─ PlanTask  (Tâche DÉDUITE par le LLM)  ──référence──▶  TaskType (vocabulaire dynamique)
      └─ Block  (Créneau PLACÉ par l'algo dans le calendrier)
 
 Settings  (contraintes configurables du moteur de placement)
 ```
+
+> Note technique Swift : l'entité métier « Task » est nommée **`PlanTask`** dans le code pour
+> éviter le conflit avec `Swift.Task` (concurrence async/await). Dans les docs produit, on peut
+> continuer à parler de « tâche ».
 
 - **Goal** : ce que l'utilisateur formule à la voix/texte. Ex. « préparer un entretien
   full-stack dans 1 mois ».
@@ -65,9 +69,9 @@ Goal supprime en cascade ses Tasks et leurs Blocks (pas d'orphelins).
 | `createdAt` | Date | système | Date de création |
 | `status` | enum | système | actif / terminé / abandonné |
 
-**Relation :** un Goal **possède plusieurs** `Task`.
+**Relation :** un Goal **possède plusieurs** `PlanTask`.
 
-### 2. `Task` — Tâche déduite (par le LLM)
+### 2. `PlanTask` — Tâche déduite (par le LLM)
 | Champ | Type | Source | Description |
 |---|---|---|---|
 | `id` | UUID | système | Identifiant unique |
@@ -114,7 +118,7 @@ flexible**.
 | `end` | Date | **algo** | Fin exacte |
 | `status` | enum | utilisateur/système | planifié / fait / déplacé / sauté |
 
-**Relation :** un Block **appartient à** une `Task`.
+**Relation :** un Block **appartient à** une `PlanTask`.
 C'est ce que l'utilisateur **voit et déplace** dans le planning.
 
 > Note : une **tâche ponctuelle** (« appeler le dentiste », « acheter les vêtements de ski »)
@@ -127,7 +131,7 @@ C'est ce que l'utilisateur **voit et déplace** dans le planning.
 | `id` | UUID | Identifiant unique |
 | `name` | String | Nom de la catégorie (ex. « leetcode », « achat »…) |
 
-**Relation :** un TaskType est **référencé par plusieurs** `Task`. Liste alimentée
+**Relation :** un TaskType est **référencé par plusieurs** `PlanTask`. Liste alimentée
 dynamiquement par le LLM (réutilise ou crée). Base des préférences **V2**.
 
 ### 5. `Settings` — Réglages (contraintes du moteur de placement)
@@ -151,7 +155,7 @@ Toutes ces valeurs sont **configurables** par l'utilisateur (réglages).
 
 ## Décisions actées
 
-- **2026-06-08** — Structure à **3 niveaux** : `Goal → Task → Block` (+ `TaskType`, `Settings`).
+- **2026-06-08** — Structure à **3 niveaux** : `Goal → PlanTask → Block` (+ `TaskType`, `Settings`).
 - **2026-06-08** — `Goal.title` est **généré par le LLM** depuis `rawInput`.
 - **2026-06-08** — `estimatedDuration` / `rhythm` / `priority` / `reasoning` vivent sur la
   **Task**, pas sur le Goal (un Goal n'a ni durée ni rythme unique).
