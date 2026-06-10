@@ -43,18 +43,57 @@ enum Priority: String, Codable, CaseIterable {
 // MARK: - Rythme
 
 /// Fréquence d'une tâche, déduite par le LLM et exploitable par l'algo de placement.
-enum Frequency: Codable, Equatable {
+///
+/// Important SwiftData : cette enum n'est PAS persistée directement. `PlanTask` persiste
+/// `frequencyKind` + `frequencyValue` (champs primitifs), puis expose un `rhythm` calculé.
+/// Ça évite les soucis de persistance transformable/Codable avec l'isolation Swift 6.
+enum Frequency: Equatable {
     case once                  // tâche ponctuelle (un seul bloc)
     case daily                 // tous les jours
     case everyNDays(Int)       // tous les N jours (ex. tous les 2 jours)
     case weekly                // une fois par semaine
     case timesPerWeek(Int)     // N fois par semaine
+
+    var storageKind: String {
+        switch self {
+        case .once: "once"
+        case .daily: "daily"
+        case .everyNDays: "everyNDays"
+        case .weekly: "weekly"
+        case .timesPerWeek: "timesPerWeek"
+        }
+    }
+
+    var storageValue: Int {
+        switch self {
+        case .once, .daily, .weekly:
+            0
+        case .everyNDays(let days), .timesPerWeek(let count):
+            count
+        }
+    }
+
+    init(storageKind: String, storageValue: Int) {
+        switch storageKind {
+        case "daily":
+            self = .daily
+        case "everyNDays":
+            self = .everyNDays(max(1, storageValue))
+        case "weekly":
+            self = .weekly
+        case "timesPerWeek":
+            self = .timesPerWeek(max(1, storageValue))
+        default:
+            self = .once
+        }
+    }
 }
 
 /// Rythme structuré d'une tâche : durée d'une session + fréquence.
-/// Le LLM produit cette structure (PAS du texte libre) pour que l'algo
-/// puisse calculer combien de blocs placer et à quels intervalles.
-struct Rhythm: Codable, Equatable {
+///
+/// Cette struct reste le modèle métier manipulé par le LLM/l'algo, mais elle n'est pas stockée
+/// telle quelle par SwiftData. `PlanTask` la reconstruit depuis des champs primitifs persistés.
+struct Rhythm: Equatable {
     /// Durée d'une session, en secondes (TimeInterval).
     var sessionDuration: TimeInterval
     /// Fréquence des sessions.

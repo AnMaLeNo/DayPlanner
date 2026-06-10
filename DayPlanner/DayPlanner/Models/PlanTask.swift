@@ -18,8 +18,12 @@ final class PlanTask {
     var title: String
     /// Durée totale estimée, en secondes (TimeInterval).
     var estimatedDuration: TimeInterval
-    /// Rythme structuré (durée de session + fréquence), produit par le LLM.
-    var rhythm: Rhythm
+    /// Durée d'une session, persistée en secondes (TimeInterval).
+    var rhythmSessionDuration: TimeInterval
+    /// Type de fréquence persisté sous forme primitive (ex. "everyNDays").
+    var frequencyKind: String
+    /// Valeur associée à la fréquence si nécessaire (ex. 2 pour tous les 2 jours).
+    var frequencyValue: Int
     /// Priorité (haute / moyenne / basse).
     var priority: Priority
     /// Explication du LLM : POURQUOI cette tâche (le « pourquoi » du produit).
@@ -38,6 +42,22 @@ final class PlanTask {
     @Relationship(deleteRule: .cascade, inverse: \Block.task)
     var blocks: [Block]
 
+    /// Rythme métier exposé au reste de l'app.
+    /// SwiftData persiste les champs primitifs ci-dessus, pas la struct `Rhythm` directement.
+    var rhythm: Rhythm {
+        get {
+            Rhythm(
+                sessionDuration: rhythmSessionDuration,
+                frequency: Frequency(storageKind: frequencyKind, storageValue: frequencyValue)
+            )
+        }
+        set {
+            rhythmSessionDuration = newValue.sessionDuration
+            frequencyKind = newValue.frequency.storageKind
+            frequencyValue = newValue.frequency.storageValue
+        }
+    }
+
     init(
         id: UUID = UUID(),
         title: String,
@@ -53,7 +73,9 @@ final class PlanTask {
         self.id = id
         self.title = title
         self.estimatedDuration = estimatedDuration
-        self.rhythm = rhythm
+        self.rhythmSessionDuration = rhythm.sessionDuration
+        self.frequencyKind = rhythm.frequency.storageKind
+        self.frequencyValue = rhythm.frequency.storageValue
         self.priority = priority
         self.reasoning = reasoning
         self.status = status
