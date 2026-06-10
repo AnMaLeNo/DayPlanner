@@ -114,6 +114,10 @@ valider l'UI, SwiftData et le modèle métier avant de brancher Foundation Model
 - `xcodebuild ... test` → **TEST SUCCEEDED**.
 - Test UI de contenu Xcode supprimé : il était fragile sur macOS/`NavigationSplitView` et ne
   testait pas la logique métier. Les tests UI de lancement restent actifs.
+- Validation manuelle Antoine : création d'un objectif `Préparer entretien full-stack` avec une
+  tâche `Réviser SwiftUI`, type `frontend`, durée totale `4h`, session `45min`, priorité haute.
+  L'objectif apparaît dans la liste, le détail affiche la tâche, le raisonnement par défaut
+  `Créé manuellement.`, priorité `high`, type `frontend`, et `Blocs : 0`.
 
 ---
 
