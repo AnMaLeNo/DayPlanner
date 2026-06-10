@@ -2,6 +2,24 @@
 
 > 🟡 Document vivant. Chaque décision structurante est datée ici, du plus récent au plus ancien.
 
+## 2026-06-11 — Étape 4 implémentée : Foundation Models objectif → tâches
+
+- Ajout de la couche `NaturalLanguagePlanning/` : types intermédiaires testables,
+  types `@Generable`, service `FoundationModelsGoalExtractor`, état `GoalExtractionAvailability`.
+- Flux produit ajouté : bouton **Créer depuis une phrase** → analyse Apple Intelligence →
+  prévisualisation éditable → création d'un `Goal` avec plusieurs `PlanTask`.
+- Décision maintenue : FoundationModels ne persiste jamais directement ; le mapping passe par
+  `ManualGoalDraft` pour réutiliser la validation et la logique `TaskType` existantes.
+- TDD : mapping pur, disponibilité, et création d'un seul objectif depuis plusieurs drafts testés.
+- Smoke runtime sur Mac : `availability=available`. Avec date de référence `2026-06-11`,
+  « entretien full-stack dans un mois » donne `2026-07-11`, et « site naturopathe en moins de
+  trois semaines » donne `2026-06-28`.
+- Piège découvert et corrigé : sans date de référence explicite, FoundationModels peut produire
+  une deadline passée. Le service injecte maintenant `Date de référence: yyyy-MM-dd`.
+- Validation réelle : `xcodebuild ... test` → **TEST SUCCEEDED**.
+- Nettoyage tests : suppression du test UI de lancement template/flaky ; remplacement par un test
+  minimal qui garde le target UI chargeable. La logique métier reste couverte par les tests unitaires.
+
 ## 2026-06-10 — Cadrage technique étape 4 : Foundation Models
 
 - Vérification Xcode locale : `FoundationModels.framework` présent dans le SDK macOS 26.5.

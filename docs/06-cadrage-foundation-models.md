@@ -1,7 +1,7 @@
 # Cadrage technique — Étape 4 : Foundation Models → objectif + tâches
 
-> Statut : cadrage validable avant implémentation.
-> Date : 2026-06-10.
+> Statut : implémenté et testé côté prototype.
+> Date : 2026-06-10, mis à jour le 2026-06-11.
 
 ## Objectif de l'étape 4
 
@@ -326,6 +326,23 @@ Sur Mac :
 ---
 
 ## Risques et décisions
+
+### Risque confirmé : dates relatives sans date de référence
+
+Smoke test réel : sans date de référence explicite, FoundationModels a produit des deadlines en
+2024 pour des demandes relatives comme `dans un mois` / `en moins de trois semaines`.
+
+Correction implémentée : `FoundationModelsGoalExtractor` injecte maintenant :
+
+```text
+Date de référence: yyyy-MM-dd
+Demande utilisateur: ...
+```
+
+Avec `Date de référence: 2026-06-11`, le smoke test retourne des deadlines futures :
+
+- `Je dois préparer un entretien full-stack dans un mois.` → `2026-07-11`
+- `Je dois faire un site pour un naturopathe en moins de trois semaines.` → `2026-06-28`
 
 ### Risque : tâches proposées imparfaites
 

@@ -121,7 +121,7 @@ valider l'UI, SwiftData et le modèle métier avant de brancher Foundation Model
 
 ---
 
-## Étape 4 — Prototype Foundation Models : objectif → tâches  *(dérisquage central)*
+## Étape 4 — Prototype Foundation Models : objectif → tâches ✅ *(dérisquage central)*
 
 **But :** valider **tôt** le pari du produit : le LLM on-device déduit correctement les tâches,
 durées, rythmes et explications à partir d'un objectif formulé librement.
@@ -132,12 +132,12 @@ durées, rythmes et explications à partir d'un objectif formulé librement.
 persiste après validation utilisateur. Elle ne crée pas encore de blocs horaires.
 
 **Sous-tâches**
-- [ ] Intégrer le framework `FoundationModels` ; vérifier la disponibilité (device/OS).
-- [ ] Définir les types `@Generable` / `@Guide` pour la sortie structurée :
+- [x] Intégrer le framework `FoundationModels` ; vérifier la disponibilité (device/OS).
+- [x] Définir les types `@Generable` / `@Guide` pour la sortie structurée :
       `Goal.title`, liste de `Task` (title, type, estimatedDuration, rhythm, priority, reasoning).
-- [ ] Écrire le prompt de **déduction** : à partir de `rawInput`, déduire le quoi/comment/rythme
-      + expliquer. Inclure la **liste des `TaskType` existants** pour réutilisation.
-- [ ] Implémenter la logique TaskType : réutiliser un type existant ou en créer un nouveau.
+- [x] Écrire le prompt de **déduction** : à partir de `rawInput`, déduire le quoi/comment/rythme
+      + expliquer. Date de référence injectée pour les deadlines relatives.
+- [x] Implémenter la logique TaskType : réutiliser un type existant ou en créer un nouveau.
 - [ ] Banc de test : ~10 phrases variées (entretien full-stack, site naturopathe, gestion de
       stock, ski le 10 nov, tâche ponctuelle « appeler le dentiste », objectif sans deadline…).
 - [ ] Évaluer la qualité : les tâches déduites sont-elles pertinentes ? rythmes réalistes ?
@@ -148,6 +148,20 @@ persiste après validation utilisateur. Elle ne crée pas encore de blocs horair
 - Sur une majorité de cas, les tâches/durées/rythmes sont **jugés réalistes** par Antoine.
 - Le mécanisme TaskType (réutilise/crée) fonctionne (pas de doublons évidents).
 - ⚠️ **Point de décision :** si la qualité est insuffisante, on réévalue ici (prompt, ou repli).
+
+**Validation réelle — 2026-06-11**
+- RED/GREEN TDD : tests `NaturalLanguageDraftMappingTests`, `GoalExtractionAvailabilityTests`,
+  extension `ManualGoalDraftTests` pour créer un seul objectif avec plusieurs tâches.
+- Ajout `NaturalLanguagePlanning/` : drafts purs, types `@Generable`, `FoundationModelsGoalExtractor`,
+  état de disponibilité et écran `NaturalLanguageGoalFormView`.
+- UI : bouton **Créer depuis une phrase**, analyse Apple Intelligence, prévisualisation éditable,
+  puis persistance d'un `Goal` avec plusieurs `PlanTask`.
+- Smoke runtime FoundationModels sur le Mac : `availability=available` ; avec date de référence
+  `2026-06-11`, les phrases « entretien full-stack dans un mois » et « site naturopathe en moins
+  de trois semaines » retournent des deadlines futures (`2026-07-11`, `2026-06-28`).
+- Piège découvert : sans date de référence, FoundationModels peut halluciner une deadline passée.
+  Correction : le service injecte explicitement `Date de référence: yyyy-MM-dd`.
+- `xcodebuild ... test` → **TEST SUCCEEDED**.
 
 ---
 
