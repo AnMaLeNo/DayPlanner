@@ -2,6 +2,17 @@
 
 > 🟡 Document vivant. Chaque décision structurante est datée ici, du plus récent au plus ancien.
 
+## 2026-06-10 — Étape 1 démarrée : modèles SwiftData
+
+- Sur la branche `setup-xcode-project`, remplacement du template SwiftData `Item` par les vrais
+  modèles du domaine : `Goal`, `PlanTask`, `Block`, `TaskType`, `Settings` + types support
+  (`Rhythm`, `Frequency`, statuts, priorité).
+- Décision technique : l'entité métier « Task » est nommée **`PlanTask`** dans le code pour
+  éviter le conflit avec `Swift.Task` (async/await). Docs mises à jour.
+- `ContentView` temporaire sert de vue de validation étape 1 : création d'un Goal de test,
+  TaskType dynamique, PlanTask, Block, Settings par défaut.
+- À vérifier côté Mac/Xcode : compilation + lancement + ajout/suppression d'un objectif.
+
 ## 2026-06-08 — Plateforme : macOS d'abord (inversion de priorité)
 
 - **Développement et usage V1 sur macOS d'abord**, iOS ensuite. Raison (Antoine) : la **limite
