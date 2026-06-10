@@ -34,7 +34,7 @@ struct NaturalLanguageGoalFormView: View {
 
                 Section("Analyse Apple Intelligence") {
                     Text(extractor.availability().userMessage)
-                        .foregroundStyle(extractor.availability().canExtract ? .secondary : .red)
+                        .foregroundStyle(extractor.availability().canExtract ? Color.secondary : Color.red)
 
                     if !statusMessage.isEmpty {
                         Text(statusMessage)
