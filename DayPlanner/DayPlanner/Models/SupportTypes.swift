@@ -68,8 +68,8 @@ enum Frequency: Equatable {
         switch self {
         case .once, .daily, .weekly:
             0
-        case .everyNDays(let days), .timesPerWeek(let count):
-            count
+        case .everyNDays(let value), .timesPerWeek(let value):
+            value
         }
     }
 
