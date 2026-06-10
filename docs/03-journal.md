@@ -2,6 +2,21 @@
 
 > 🟡 Document vivant. Chaque décision structurante est datée ici, du plus récent au plus ancien.
 
+## 2026-06-10 — Étape 3 validée : création manuelle d'objectif + tâche
+
+- Décision : insérer une étape manuelle avant Foundation Models pour valider UI + SwiftData sans
+  dépendre du LLM.
+- Ajout `ManualGoalDraft` : validation pure et testable des champs, construction `Goal` + une
+  `PlanTask`, `TaskType` optionnel, rythme `.once` pour la première version manuelle.
+- Ajout `ManualGoalFormView` : formulaire macOS avec objectif, deadline optionnelle, tâche,
+  type, durée totale, durée de session, priorité, note/raisonnement.
+- Intégration dans `ContentView` via **Créer un objectif manuel**.
+- TDD : RED confirmé (`ManualGoalDraft` absent), puis GREEN avec `ManualGoalDraftTests`.
+- Validation réelle : `xcodebuild ... build` → **BUILD SUCCEEDED** ; `xcodebuild ... test` →
+  **TEST SUCCEEDED**.
+- Nettoyage : suppression du test UI de contenu template/fragile ; les tests UI de lancement
+  restent actifs, la logique métier est couverte par les tests unitaires.
+
 ## 2026-06-10 — Étape 2 implémentée : EventKit + créneaux libres
 
 - Cadrage validé : EventKit est **lecture seule** ; aucun événement calendrier n'est copié dans
