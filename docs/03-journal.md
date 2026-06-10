@@ -14,6 +14,10 @@
 - TDD : RED confirmé (`ManualGoalDraft` absent), puis GREEN avec `ManualGoalDraftTests`.
 - Validation réelle : `xcodebuild ... build` → **BUILD SUCCEEDED** ; `xcodebuild ... test` →
   **TEST SUCCEEDED**.
+- Validation manuelle Antoine : objectif `Préparer entretien full-stack` créé depuis le formulaire,
+  avec tâche `Réviser SwiftUI`, type `frontend`, priorité haute, durée totale `4h`, session
+  `45min`. Le détail affiche bien `Créé manuellement.`, `Priorité : high`, `Type : frontend`,
+  `Blocs : 0`.
 - Nettoyage : suppression du test UI de contenu template/fragile ; les tests UI de lancement
   restent actifs, la logique métier est couverte par les tests unitaires.
 
