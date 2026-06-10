@@ -52,16 +52,35 @@ struct FoundationModelsGoalExtractor: GoalExtractionProviding {
             Utilise priority uniquement parmi low, medium, high.
             Utilise typeName en minuscules, par exemple frontend, backend, design, admin, revision, autre.
             Donne des durées réalistes mais prudentes.
+            Si l'utilisateur donne une deadline relative, calcule-la par rapport à la date de référence fournie dans le prompt.
+            Ne choisis jamais une date passée sauf si l'utilisateur la donne explicitement.
             """
         )
 
         let response = try await session.respond(
-            to: cleanedInput,
+            to: prompt(for: cleanedInput),
             generating: GeneratedGoalDraft.self
         )
 
         return response.content.extracted(rawInput: cleanedInput)
     }
+
+    private func prompt(for cleanedInput: String) -> String {
+        let currentDate = Self.referenceDateFormatter.string(from: Date())
+        return """
+        Date de référence: \(currentDate)
+        Demande utilisateur: \(cleanedInput)
+        """
+    }
+
+    private static let referenceDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = .current
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter
+    }()
 }
 
 @available(macOS 26.0, iOS 26.0, visionOS 26.0, *)
