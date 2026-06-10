@@ -2,6 +2,22 @@
 
 > 🟡 Document vivant. Chaque décision structurante est datée ici, du plus récent au plus ancien.
 
+## 2026-06-10 — Cadrage technique étape 4 : Foundation Models
+
+- Vérification Xcode locale : `FoundationModels.framework` présent dans le SDK macOS 26.5.
+- Vérification interface Swift : API disponible `@Generable`, `@Guide`, `SystemLanguageModel`,
+  `LanguageModelSession`, `respond(to:generating:)`.
+- Spike de compilation hors projet : import `FoundationModels` + type `@Generable` → **COMPILE_OK**.
+- Spike runtime sur le Mac d'Antoine : `availability=available`, `isAvailable=true`,
+  `supportsCurrentLocale=true`, `contextSize=4096`, français `fr-FR` supporté.
+- Spike génération structurée : entrée `Je dois préparer un entretien full-stack dans un mois.` →
+  objectif `Préparer un entretien full-stack` + 5 tâches avec durées en minutes.
+- Décision d'architecture : isoler FoundationModels dans `NaturalLanguagePlanning/`, ne pas écrire
+  directement en SwiftData, mapper la sortie vers la validation existante `ManualGoalDraft`.
+- Décision UX : prévisualisation éditable obligatoire avant persistance ; fallback formulaire manuel
+  si le modèle est indisponible.
+- Cadrage complet écrit dans `docs/06-cadrage-foundation-models.md`.
+
 ## 2026-06-10 — Étape 3 validée : création manuelle d'objectif + tâche
 
 - Décision : insérer une étape manuelle avant Foundation Models pour valider UI + SwiftData sans

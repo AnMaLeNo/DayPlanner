@@ -126,6 +126,11 @@ valider l'UI, SwiftData et le modèle métier avant de brancher Foundation Model
 **But :** valider **tôt** le pari du produit : le LLM on-device déduit correctement les tâches,
 durées, rythmes et explications à partir d'un objectif formulé librement.
 
+**Cadrage technique :** voir `docs/06-cadrage-foundation-models.md`.
+
+**Décision de périmètre :** l'étape 4 crée une prévisualisation éditable `objectif + tâches`, puis
+persiste après validation utilisateur. Elle ne crée pas encore de blocs horaires.
+
 **Sous-tâches**
 - [ ] Intégrer le framework `FoundationModels` ; vérifier la disponibilité (device/OS).
 - [ ] Définir les types `@Generable` / `@Guide` pour la sortie structurée :
