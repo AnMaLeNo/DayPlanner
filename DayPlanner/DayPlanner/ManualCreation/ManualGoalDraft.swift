@@ -72,8 +72,39 @@ struct ManualGoalDraft {
             deadline: deadline
         )
 
+        let task = buildTask(attachedTo: goal)
+        goal.tasks.append(task)
+        return BuildResult(goal: goal, task: task)
+    }
+
+    static func buildGoal(from drafts: [ManualGoalDraft]) throws -> Goal {
+        guard let firstDraft = drafts.first else { throw ValidationError.blankGoalTitle }
+
+        let firstResult = try firstDraft.buildGoal()
+        let goal = firstResult.goal
+
+        for draft in drafts.dropFirst() {
+            try draft.validateTaskOnly()
+            let task = draft.buildTask(attachedTo: goal)
+            goal.tasks.append(task)
+        }
+
+        return goal
+    }
+
+    private func validateTaskOnly() throws {
+        guard !taskTitle.trimmedForManualInput.isEmpty else { throw ValidationError.blankTaskTitle }
+        guard estimatedHours > 0 else { throw ValidationError.nonPositiveEstimatedDuration }
+        guard sessionMinutes > 0 else { throw ValidationError.nonPositiveSessionDuration }
+    }
+
+    private func buildTask(attachedTo goal: Goal) -> PlanTask {
+        let cleanedTaskTitle = taskTitle.trimmedForManualInput
+        let cleanedTaskType = taskTypeName.trimmedForManualInput.lowercased()
+        let cleanedReasoning = reasoning.trimmedForManualInput
         let taskType = cleanedTaskType.isEmpty ? nil : TaskType(name: cleanedTaskType)
-        let task = PlanTask(
+
+        return PlanTask(
             title: cleanedTaskTitle,
             estimatedDuration: estimatedHours * 60 * 60,
             rhythm: Rhythm(sessionDuration: sessionMinutes * 60, frequency: .once),
@@ -82,9 +113,6 @@ struct ManualGoalDraft {
             goal: goal,
             type: taskType
         )
-
-        goal.tasks.append(task)
-        return BuildResult(goal: goal, task: task)
     }
 }
 

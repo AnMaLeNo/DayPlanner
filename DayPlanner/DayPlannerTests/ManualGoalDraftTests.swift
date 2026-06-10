@@ -141,7 +141,8 @@ struct ManualGoalDraftTests {
 
         #expect(goal.title == "Préparer entretien full-stack")
         #expect(goal.tasks.count == 2)
-        #expect(goal.tasks.map(\.title).sorted() == ["Réviser backend", "Réviser frontend"])
+        let taskTitles = goal.tasks.map { $0.title }.sorted()
+        #expect(taskTitles == ["Réviser backend", "Réviser frontend"])
         #expect(goal.tasks.allSatisfy { $0.goal === goal })
     }
 }
