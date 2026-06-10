@@ -2,16 +2,22 @@
 
 > 🟡 Document vivant. Chaque décision structurante est datée ici, du plus récent au plus ancien.
 
-## 2026-06-10 — Étape 1 démarrée : modèles SwiftData
+## 2026-06-10 — Étape 1 validée : setup macOS + modèles SwiftData
 
 - Sur la branche `setup-xcode-project`, remplacement du template SwiftData `Item` par les vrais
   modèles du domaine : `Goal`, `PlanTask`, `Block`, `TaskType`, `Settings` + types support
   (`Rhythm`, `Frequency`, statuts, priorité).
 - Décision technique : l'entité métier « Task » est nommée **`PlanTask`** dans le code pour
   éviter le conflit avec `Swift.Task` (async/await). Docs mises à jour.
+- Correction SwiftData/Swift 6 : `Rhythm` n'est **pas persisté directement** comme struct
+  `Codable` ; `PlanTask` persiste des primitives (`rhythmSessionDuration`, `frequencyKind`,
+  `frequencyValue`) et expose `rhythm` comme propriété calculée. Évite le warning/erreur
+  `Main actor-isolated conformance ... Encodable`.
 - `ContentView` temporaire sert de vue de validation étape 1 : création d'un Goal de test,
   TaskType dynamique, PlanTask, Block, Settings par défaut.
-- À vérifier côté Mac/Xcode : compilation + lancement + ajout/suppression d'un objectif.
+- Validation réelle côté Mac/Xcode : `xcodebuild ... build` → **BUILD SUCCEEDED** ;
+  `xcodebuild ... test` → **TEST SUCCEEDED** ; validation manuelle Antoine → app fonctionne.
+- Étape 1 du plan MVP marquée **✅ terminée** dans `05-plan-mvp.md`.
 
 ## 2026-06-08 — Plateforme : macOS d'abord (inversion de priorité)
 
