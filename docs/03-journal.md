@@ -2,6 +2,26 @@
 
 > 🟡 Document vivant. Chaque décision structurante est datée ici, du plus récent au plus ancien.
 
+## 2026-06-10 — Étape 2 implémentée : EventKit + créneaux libres
+
+- Cadrage validé : EventKit est **lecture seule** ; aucun événement calendrier n'est copié dans
+  SwiftData. L'app transforme les `EKEvent` en `CalendarEvent` interne.
+- Ajout du calcul pur `FreeSlotCalculator` + `SchedulingRules` + `FreeSlot` : retire les événements
+  occupés des fenêtres de travail configurées (`Settings`) et filtre les créneaux trop courts.
+- TDD effectué : RED sur `FreeSlotCalculatorTests` (types absents), puis GREEN après implémentation.
+  Cas couverts : journée vide, événement au milieu, événements qui se chevauchent, jour non
+  travaillé, créneau trop court.
+- Ajout `CalendarService` (EventKit) : demande `requestFullAccessToEvents()`, lit les événements
+  sur une plage, expose un statut lisible.
+- Ajout `CalendarDebugView` : bouton **Calendrier** dans `ContentView`, permission, lecture
+  d'aujourd'hui, liste événements, liste créneaux libres.
+- Config macOS : `NSCalendarsFullAccessUsageDescription` + fallback `NSCalendarsUsageDescription`
+  dans l'Info.plist généré ; entitlement sandbox
+  `com.apple.security.personal-information.calendars` dans `DayPlanner.entitlements`.
+- Validation réelle : `xcodebuild ... build` → **BUILD SUCCEEDED** ; `xcodebuild ... test` →
+  **TEST SUCCEEDED** ; bundle vérifié (`Info.plist` + entitlements codesign). Reste validation
+  manuelle Antoine avec le vrai prompt Calendrier.
+
 ## 2026-06-10 — Étape 1 validée : setup macOS + modèles SwiftData
 
 - Sur la branche `setup-xcode-project`, remplacement du template SwiftData `Item` par les vrais
