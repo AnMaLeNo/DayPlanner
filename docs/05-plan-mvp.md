@@ -86,7 +86,38 @@ Chaque étape est **testable seule** avant de passer à la suivante.
 
 ---
 
-## Étape 3 — Prototype Foundation Models : objectif → tâches  *(dérisquage central)*
+## Étape 3 — Création manuelle d'objectif + première tâche ✅
+
+**But :** permettre à l'utilisateur de créer un objectif et une première tâche sans LLM, pour
+valider l'UI, SwiftData et le modèle métier avant de brancher Foundation Models.
+
+**Sous-tâches**
+- [x] Ajouter un formulaire macOS de création manuelle.
+- [x] Champs objectif : phrase brute/intention, titre, deadline optionnelle.
+- [x] Champs tâche : titre, type optionnel, durée totale estimée, durée de session, priorité,
+      note/raisonnement.
+- [x] Valider les champs obligatoires et durées positives.
+- [x] Créer `Goal` + une `PlanTask` en SwiftData.
+- [x] Réutiliser un `TaskType` existant si le nom existe déjà, sinon en créer un nouveau.
+- [x] Afficher l'objectif créé dans la liste existante.
+
+**DoD — c'est fini quand…**
+- [x] Un objectif créé manuellement apparaît dans la liste.
+- [x] Sa tâche est visible dans le détail de l'objectif.
+- [x] La validation empêche les titres vides et durées invalides.
+- [x] Les tests unitaires `ManualGoalDraftTests` passent.
+
+**Validation réelle — 2026-06-10**
+- RED : `ManualGoalDraftTests` échouait car `ManualGoalDraft` n'existait pas.
+- GREEN : ajout `ManualGoalDraft`, puis `ManualGoalFormView`.
+- `xcodebuild ... build` → **BUILD SUCCEEDED**.
+- `xcodebuild ... test` → **TEST SUCCEEDED**.
+- Test UI de contenu Xcode supprimé : il était fragile sur macOS/`NavigationSplitView` et ne
+  testait pas la logique métier. Les tests UI de lancement restent actifs.
+
+---
+
+## Étape 4 — Prototype Foundation Models : objectif → tâches  *(dérisquage central)*
 
 **But :** valider **tôt** le pari du produit : le LLM on-device déduit correctement les tâches,
 durées, rythmes et explications à partir d'un objectif formulé librement.
@@ -111,7 +142,7 @@ durées, rythmes et explications à partir d'un objectif formulé librement.
 
 ---
 
-## Étape 4 — Algo de placement : tâches → blocs sans conflit
+## Étape 5 — Algo de placement : tâches → blocs sans conflit
 
 **But :** transformer les `Task` (avec rythme) en `Block` posés dans les créneaux libres, sans
 chevauchement, en respectant les `Settings`, étalés jusqu'à la deadline.
@@ -136,7 +167,7 @@ chevauchement, en respectant les `Settings`, étalés jusqu'à la deadline.
 
 ---
 
-## Étape 5 — UI SwiftUI : afficher + corriger
+## Étape 6 — UI SwiftUI : afficher + corriger
 
 **But :** rendre le planning visible et **modifiable** par l'utilisateur (il garde le contrôle).
 
