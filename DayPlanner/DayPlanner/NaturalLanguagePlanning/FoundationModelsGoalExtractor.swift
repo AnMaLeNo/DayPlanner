@@ -62,7 +62,9 @@ struct FoundationModelsGoalExtractor: GoalExtractionProviding {
             generating: GeneratedGoalDraft.self
         )
 
-        return response.content.extracted(rawInput: cleanedInput)
+        return response.content
+            .extracted(rawInput: cleanedInput)
+            .correctingRelativeDeadline()
     }
 
     private func prompt(for cleanedInput: String) -> String {
