@@ -66,7 +66,7 @@ private extension String {
         let cleaned = nlpTrimmed
         guard !cleaned.isEmpty else { return nil }
 
-        let parts = cleaned.split(separator: "-").compactMap(Int.init)
+        let parts = cleaned.split(separator: "-").compactMap { Int(String($0)) }
         guard parts.count == 3 else { return nil }
 
         var components = DateComponents()
