@@ -15,6 +15,7 @@ struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Goal.createdAt, order: .reverse) private var goals: [Goal]
     @Query private var settings: [Settings]
+    @State private var isShowingCalendarDebug = false
 
     var body: some View {
         NavigationSplitView {
@@ -48,6 +49,14 @@ struct ContentView: View {
             .navigationTitle("DayPlanner")
             .toolbar {
                 ToolbarItem {
+                    Button {
+                        isShowingCalendarDebug = true
+                    } label: {
+                        Label("Calendrier", systemImage: "calendar")
+                    }
+                }
+
+                ToolbarItem {
                     Button(action: addSampleGoal) {
                         Label("Ajouter", systemImage: "plus")
                     }
@@ -59,6 +68,9 @@ struct ContentView: View {
         }
         .task {
             ensureDefaultSettings()
+        }
+        .sheet(isPresented: $isShowingCalendarDebug) {
+            CalendarDebugView()
         }
     }
 
