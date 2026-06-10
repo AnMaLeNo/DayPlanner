@@ -22,28 +22,33 @@ Chaque étape est **testable seule** avant de passer à la suivante.
 
 ---
 
-## Étape 1 — Setup projet + modèle SwiftData
+## Étape 1 — Setup projet + modèle SwiftData ✅
 
 **But :** poser les fondations techniques et le modèle de données défini dans `04-modele-donnees.md`.
 
 **Sous-tâches**
-- [ ] Créer le projet Xcode (app **macOS**, cible **macOS 26 Tahoe**, SwiftUI, SwiftData
+- [x] Créer le projet Xcode (app **macOS**, cible **macOS 26 Tahoe**, SwiftUI, SwiftData
       activé). *(Dev macOS d'abord — voir `01-vision` : évite la limite 7 j du provisioning iOS
       gratuit. Portage iOS ensuite, mêmes API.)*
-- [ ] Configurer le repo Git (`.gitignore` Xcode, commit initial).
-- [ ] Définir les `@Model` SwiftData : `Goal`, `Task`, `Block`, `TaskType`, `Settings`.
-- [ ] Définir les types support : enums `GoalStatus`, `TaskStatus`, `BlockStatus`, `Priority` ;
+- [x] Configurer le repo Git (`.gitignore` Xcode, commit initial).
+- [x] Définir les `@Model` SwiftData : `Goal`, `PlanTask`, `Block`, `TaskType`, `Settings`.
+- [x] Définir les types support : enums `GoalStatus`, `TaskStatus`, `BlockStatus`, `Priority` ;
       struct `Rhythm { sessionDuration, frequency }` + enum `Frequency`.
-- [ ] Déclarer les `@Relationship` (Goal→Tasks, Task→Blocks, Task→TaskType) + suppression en
+- [x] Déclarer les `@Relationship` (Goal→PlanTasks, PlanTask→Blocks, PlanTask→TaskType) + suppression en
       cascade.
-- [ ] Initialiser un `Settings` par défaut au premier lancement (valeurs par défaut V1).
-- [ ] Écrire quelques objets de test (seed) pour visualiser des données.
+- [x] Initialiser un `Settings` par défaut au premier lancement (valeurs par défaut V1).
+- [x] Écrire quelques objets de test (seed) pour visualiser des données.
 
 **DoD — c'est fini quand…**
-- L'app compile et se lance sur le simulateur iOS 26.
-- On peut créer/lire/supprimer un `Goal` avec ses `Task` et `Block` en mémoire SwiftData.
-- Supprimer un `Goal` supprime bien ses `Task` et `Block` (pas d'orphelins).
-- Le `Settings` par défaut existe au premier lancement.
+- [x] L'app compile et se lance sur macOS 26.
+- [x] On peut créer/lire/supprimer un `Goal` avec ses `PlanTask` et `Block` en mémoire SwiftData.
+- [x] Supprimer un `Goal` supprime bien ses `PlanTask` et `Block` (pas d'orphelins).
+- [x] Le `Settings` par défaut existe au premier lancement.
+
+**Validation réelle — 2026-06-10**
+- `xcodebuild -project DayPlanner/DayPlanner.xcodeproj -scheme DayPlanner -destination "platform=macOS" build` → **BUILD SUCCEEDED**.
+- `xcodebuild -project DayPlanner/DayPlanner.xcodeproj -scheme DayPlanner -destination "platform=macOS" test` → **TEST SUCCEEDED**.
+- Validation manuelle Antoine dans Xcode : app lancée, bouton **Ajouter**, affichage de l'objectif et de la tâche → **OK**.
 
 ---
 
