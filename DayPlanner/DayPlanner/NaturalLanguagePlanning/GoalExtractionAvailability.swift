@@ -13,15 +13,17 @@ enum GoalExtractionAvailability: Equatable {
 
     var canExtract: Bool {
         switch self {
-        case .available: true
-        case .unavailable: false
+        case .available:
+            return true
+        case .unavailable:
+            return false
         }
     }
 
     var userMessage: String {
         switch self {
         case .available:
-            "Apple Intelligence est disponible."
+            return "Apple Intelligence est disponible."
         case .unavailable(let reason):
             let cleaned = reason.trimmingCharacters(in: .whitespacesAndNewlines)
             return cleaned.isEmpty ? "Foundation Models n'est pas disponible sur cet appareil." : cleaned
