@@ -16,11 +16,18 @@ struct ContentView: View {
     @Query(sort: \Goal.createdAt, order: .reverse) private var goals: [Goal]
     @Query private var settings: [Settings]
     @State private var isShowingCalendarDebug = false
+    @State private var isShowingManualGoalForm = false
 
     var body: some View {
         NavigationSplitView {
             List {
                 Section("Actions de debug") {
+                    Button {
+                        isShowingManualGoalForm = true
+                    } label: {
+                        Label("Créer un objectif manuel", systemImage: "square.and.pencil")
+                    }
+
                     Button {
                         isShowingCalendarDebug = true
                     } label: {
@@ -68,6 +75,9 @@ struct ContentView: View {
         }
         .sheet(isPresented: $isShowingCalendarDebug) {
             CalendarDebugView()
+        }
+        .sheet(isPresented: $isShowingManualGoalForm) {
+            ManualGoalFormView()
         }
     }
 
