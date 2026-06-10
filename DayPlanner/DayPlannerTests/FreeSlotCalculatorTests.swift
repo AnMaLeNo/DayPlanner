@@ -12,7 +12,11 @@ import Testing
 @testable import DayPlanner
 
 struct FreeSlotCalculatorTests {
-    private let calendar = Calendar(identifier: .gregorian)
+    private let calendar: Calendar = {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+        return calendar
+    }()
 
     @Test func emptyWorkdayReturnsSingleWorkWindow() {
         let day = makeDate(2026, 6, 8, 0, 0) // lundi
