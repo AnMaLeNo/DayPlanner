@@ -52,7 +52,7 @@ Chaque étape est **testable seule** avant de passer à la suivante.
 
 ---
 
-## Étape 2 — EventKit : lire le calendrier → créneaux libres 🟡
+## Étape 2 — EventKit : lire le calendrier → créneaux libres ✅
 
 **But :** obtenir les **trous** réels de la journée/semaine, matière première de l'algo.
 
@@ -69,7 +69,7 @@ Chaque étape est **testable seule** avant de passer à la suivante.
       créneaux libres.
 
 **DoD — c'est fini quand…**
-- [ ] L'app obtient l'autorisation et lit les vrais événements du calendrier de test.
+- [x] L'app obtient l'autorisation et lit les vrais événements du calendrier de test.
 - [x] `freeSlots(...)` renvoie des créneaux corrects sur des cas testés (journée vide, journée
   pleine, événements qui se chevauchent, hors heures de travail).
 - [x] Le calendrier n'est **jamais** copié dans SwiftData (lecture seule confirmée).
@@ -80,8 +80,9 @@ Chaque étape est **testable seule** avant de passer à la suivante.
 - GREEN : `xcodebuild ... test` → **TEST SUCCEEDED** après implémentation du calcul.
 - Bundle macOS vérifié : Info.plist contient les clés calendrier et le codesign contient
   l'entitlement `com.apple.security.personal-information.calendars`.
-- Reste à valider manuellement par Antoine : ouvrir la vue **Calendrier**, accepter la permission,
-  puis cliquer **Lire aujourd'hui** avec un calendrier réel.
+- Validation manuelle Antoine : ouvrir la vue **Calendrier**, accepter la permission, puis cliquer
+  **Lire aujourd'hui** avec un calendrier réel. Calendrier vide aujourd'hui → créneau libre affiché
+  `9:00 - 19:00`, durée `10h 0 min`, conforme aux `Settings` par défaut.
 
 ---
 

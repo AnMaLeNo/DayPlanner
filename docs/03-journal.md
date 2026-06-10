@@ -19,8 +19,13 @@
   dans l'Info.plist généré ; entitlement sandbox
   `com.apple.security.personal-information.calendars` dans `DayPlanner.entitlements`.
 - Validation réelle : `xcodebuild ... build` → **BUILD SUCCEEDED** ; `xcodebuild ... test` →
-  **TEST SUCCEEDED** ; bundle vérifié (`Info.plist` + entitlements codesign). Reste validation
-  manuelle Antoine avec le vrai prompt Calendrier.
+  **TEST SUCCEEDED** ; bundle vérifié (`Info.plist` + entitlements codesign).
+- Validation manuelle Antoine : permission Calendrier acceptée, bouton **Lire aujourd'hui** OK.
+  Avec calendrier vide, l'app affiche `9:00 - 19:00` et `10h 0 min`, conforme aux `Settings`
+  par défaut.
+- Note Xcode : un message `debugserver died with signal SIGKILL` observé à 20:39 correspond au
+  `debugserver` bloqué qui a été tué via SSH pour débloquer les tests UI ; ce n'est pas une erreur
+  produit DayPlanner.
 
 ## 2026-06-10 — Étape 1 validée : setup macOS + modèles SwiftData
 
