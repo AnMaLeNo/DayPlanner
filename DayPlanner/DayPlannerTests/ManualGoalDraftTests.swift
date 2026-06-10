@@ -112,4 +112,36 @@ struct ManualGoalDraftTests {
             try invalidSession.buildGoal()
         }
     }
+
+    @Test func multipleDraftsBuildOneGoalWithMultipleTasks() throws {
+        let drafts = [
+            ManualGoalDraft(
+                rawInput: "Préparer un entretien full-stack",
+                goalTitle: "Préparer entretien full-stack",
+                taskTitle: "Réviser backend",
+                taskTypeName: "backend",
+                estimatedHours: 3,
+                sessionMinutes: 45,
+                priority: .high,
+                reasoning: "Base serveur."
+            ),
+            ManualGoalDraft(
+                rawInput: "Préparer un entretien full-stack",
+                goalTitle: "Préparer entretien full-stack",
+                taskTitle: "Réviser frontend",
+                taskTypeName: "frontend",
+                estimatedHours: 2,
+                sessionMinutes: 45,
+                priority: .medium,
+                reasoning: "Base UI."
+            )
+        ]
+
+        let goal = try ManualGoalDraft.buildGoal(from: drafts)
+
+        #expect(goal.title == "Préparer entretien full-stack")
+        #expect(goal.tasks.count == 2)
+        #expect(goal.tasks.map(\.title).sorted() == ["Réviser backend", "Réviser frontend"])
+        #expect(goal.tasks.allSatisfy { $0.goal === goal })
+    }
 }
