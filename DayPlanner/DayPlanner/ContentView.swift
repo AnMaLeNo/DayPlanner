@@ -17,11 +17,19 @@ struct ContentView: View {
     @Query private var settings: [Settings]
     @State private var isShowingCalendarDebug = false
     @State private var isShowingManualGoalForm = false
+    @State private var isShowingNaturalLanguageGoalForm = false
 
     var body: some View {
         NavigationSplitView {
             List {
                 Section("Actions de debug") {
+                    Button {
+                        isShowingNaturalLanguageGoalForm = true
+                    } label: {
+                        Label("Créer depuis une phrase", systemImage: "sparkles")
+                    }
+                    .accessibilityIdentifier("natural-language-goal-create-button")
+
                     Button {
                         isShowingManualGoalForm = true
                     } label: {
@@ -79,6 +87,9 @@ struct ContentView: View {
         }
         .sheet(isPresented: $isShowingManualGoalForm) {
             ManualGoalFormView()
+        }
+        .sheet(isPresented: $isShowingNaturalLanguageGoalForm) {
+            NaturalLanguageGoalFormView()
         }
     }
 
