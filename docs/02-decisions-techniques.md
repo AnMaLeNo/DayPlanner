@@ -44,6 +44,9 @@
 - ✅ **Répartition actée des rôles :**
   - **LLM** → comprendre l'objectif + déduire quoi/comment/rythme + **expliquer**. C'est ici
     que vit toute l'intelligence du produit.
+  - **Correctifs déterministes** → reprendre la main quand l'utilisateur donne une contrainte
+    calculable sans IA, par exemple `lundi prochain`. Le LLM peut proposer une deadline, mais
+    les dates relatives explicites sont corrigées par l'app avec `Calendar`.
   - **Algo d'ordonnancement** → **placer** les blocs ainsi définis dans les **trous réels** du
     calendrier sans chevauchement (calcul d'horaires fiable). On ne demande PAS au LLM de
     calculer des horaires minute par minute (il hallucine les conflits).
@@ -110,6 +113,9 @@ Algo = la fiabilité (horaires exacts, zéro chevauchement)
   dictée dans l'app).
 - **2026-06-08** — **Moteur de placement** : valeurs par défaut raisonnables + configurables.
 - **2026-06-08** — **Persistance** : **SwiftData**.
+- **2026-06-11** — **Deadlines relatives explicites** : ne pas dépendre uniquement du LLM ;
+  `lundi prochain`, `mardi prochain`, etc. sont résolus par code déterministe puis appliqués
+  en correction de la sortie FoundationModels.
 
 ## Questions ouvertes (synthèse)
 

@@ -2,6 +2,20 @@
 
 > 🟡 Document vivant. Chaque décision structurante est datée ici, du plus récent au plus ancien.
 
+## 2026-06-11 — Correction deadline relative explicite (`lundi prochain`)
+
+- Bug identifié par Antoine : avec la phrase `J'ai un entretien technique de type leetcode lundi prochain`,
+  FoundationModels peut générer une deadline incohérente (`2026-06-12` côté app, `2026-06-11` reproduit
+  en smoke test), alors que depuis jeudi `2026-06-11`, `lundi prochain` doit donner `2026-06-15`.
+- Décision : ne pas laisser le LLM porter seul les calculs calendaires explicites. Ajout de
+  `RelativeDeadlineResolver`, qui reconnaît les jours français suivis de `prochain/prochaine` et calcule
+  la date ISO via `Calendar`.
+- Intégration : `FoundationModelsGoalExtractor` applique `correctingRelativeDeadline()` après la sortie
+  structurée du LLM, avant affichage du brouillon éditable.
+- TDD : test RED confirmé sur type absent, puis GREEN avec cas `lundi prochain` depuis jeudi, casse/accents,
+  absence d'expression explicite, et override d'une mauvaise deadline LLM.
+- Validation réelle : `xcodebuild ... test` sur le Mac d'Antoine → **TEST SUCCEEDED**.
+
 ## 2026-06-11 — Étape 4 implémentée : Foundation Models objectif → tâches
 
 - Ajout de la couche `NaturalLanguagePlanning/` : types intermédiaires testables,
