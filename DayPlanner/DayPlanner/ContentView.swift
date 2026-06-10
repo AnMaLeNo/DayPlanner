@@ -27,6 +27,7 @@ struct ContentView: View {
                     } label: {
                         Label("Créer un objectif manuel", systemImage: "square.and.pencil")
                     }
+                    .accessibilityIdentifier("manual-goal-create-button")
 
                     Button {
                         isShowingCalendarDebug = true

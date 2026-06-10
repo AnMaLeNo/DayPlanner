@@ -17,7 +17,7 @@ final class DayPlannerUITests: XCTestCase {
         let app = XCUIApplication()
         app.launch()
 
-        let createButton = app.buttons["Créer un objectif manuel"]
+        let createButton = app.buttons["manual-goal-create-button"]
         XCTAssertTrue(createButton.waitForExistence(timeout: 5))
     }
 }
