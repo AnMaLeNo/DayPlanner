@@ -2,6 +2,25 @@
 
 > 🟡 Document vivant. Chaque décision structurante est datée ici, du plus récent au plus ancien.
 
+## 2026-06-11 — Refonte UI Liquid Glass
+
+- Adoption du langage de design **Liquid Glass** (macOS 26) sur toute l'app.
+- Règle HIG appliquée : le verre vit sur la **couche de contrôle** (toolbars, CTA),
+  jamais sur la couche de contenu. Boutons primaires en `.glassProminent`,
+  secondaires en `.glass` ; le contenu utilise des cartes sobres (`.card()`).
+- Nouveau mini design system `DesignSystem/Theme.swift` : constantes d'espacement
+  et de rayons, `PriorityBadge`, `InfoChip`, modificateur `.card()`.
+- `ContentView` restructuré : actions de création regroupées dans un menu toolbar
+  unique (⌘N / ⇧⌘N), sidebar avec sélection liée au détail, états vides riches
+  (`ContentUnavailableView` avec action), détail en cartes avec badges priorité.
+- Formulaires : transitions `blurReplace` + ressorts pour l'apparition des résultats
+  d'analyse, bandeau d'erreur animé en `safeAreaInset` (au lieu d'une section),
+  pickers de priorité segmentés partout, labels Liquid Glass cohérents.
+- Accessibilité : identifiants existants conservés (tests UI), labels accessibilité
+  ajoutés sur badges, zones de texte et bandeaux d'erreur.
+- Validation réelle : `xcodebuild ... build` → **BUILD SUCCEEDED** ;
+  `xcodebuild ... test` → **TEST SUCCEEDED** (19 tests unitaires + 1 UI).
+
 ## 2026-06-11 — Étape 4 implémentée : Foundation Models objectif → tâches
 
 - Ajout de la couche `NaturalLanguagePlanning/` : types intermédiaires testables,
