@@ -56,14 +56,28 @@ struct CalendarDebugView: View {
 
     private var actionsSection: some View {
         Section("Actions") {
-            Button("Demander l'accès calendrier") {
-                Task { await calendarService.requestAccess() }
-            }
+            HStack(spacing: 10) {
+                Button {
+                    Task { await calendarService.requestAccess() }
+                } label: {
+                    Label("Demander l'accès", systemImage: "lock.shield")
+                }
+                .buttonStyle(.glass)
 
-            Button("Lire aujourd'hui") {
-                Task { await loadToday() }
+                Button {
+                    Task { await loadToday() }
+                } label: {
+                    if isLoading {
+                        ProgressView()
+                            .controlSize(.small)
+                    } else {
+                        Label("Lire aujourd'hui", systemImage: "calendar.day.timeline.left")
+                    }
+                }
+                .buttonStyle(.glassProminent)
+                .disabled(!calendarService.accessState.canReadEvents || isLoading)
             }
-            .disabled(!calendarService.accessState.canReadEvents || isLoading)
+            .padding(.vertical, 2)
         }
     }
 
