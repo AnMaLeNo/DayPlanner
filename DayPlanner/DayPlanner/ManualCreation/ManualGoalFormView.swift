@@ -2,8 +2,9 @@
 //  ManualGoalFormView.swift
 //  DayPlanner
 //
-//  Écran temporaire mais utilisable de création manuelle d'un objectif + première tâche.
-//  Le futur module Foundation Models remplira le même modèle SwiftData automatiquement.
+//  Création manuelle d'un objectif + première tâche.
+//  Liquid Glass : CTA de confirmation en verre proéminent, erreur de validation
+//  affichée en bandeau animé plutôt qu'en section de formulaire.
 //
 
 import SwiftData
@@ -33,7 +34,8 @@ struct ManualGoalFormView: View {
                         .lineLimit(2...4)
                     TextField("Titre de l'objectif", text: $goalTitle)
 
-                    Toggle("Ajouter une deadline", isOn: $hasDeadline)
+                    Toggle("Ajouter une deadline", isOn: $hasDeadline.animation(.smooth(duration: 0.25)))
+                        .toggleStyle(.switch)
                     if hasDeadline {
                         DatePicker("Deadline", selection: $deadline, displayedComponents: [.date])
                     }
@@ -48,31 +50,41 @@ struct ManualGoalFormView: View {
 
                     Picker("Priorité", selection: $priority) {
                         ForEach(Priority.allCases, id: \.self) { priority in
-                            Text(priority.manualFormLabel).tag(priority)
+                            Text(priority.displayLabel).tag(priority)
                         }
                     }
+                    .pickerStyle(.segmented)
                 }
 
                 Section("Pourquoi / notes") {
                     TextField("Pourquoi cette tâche est utile ?", text: $reasoning, axis: .vertical)
                         .lineLimit(2...5)
                 }
-
-                if let errorMessage {
-                    Section("Erreur") {
-                        Text(errorMessage)
-                            .foregroundStyle(.red)
-                    }
-                }
             }
             .formStyle(.grouped)
+            .safeAreaInset(edge: .bottom) {
+                if let errorMessage {
+                    Label(errorMessage, systemImage: "exclamationmark.triangle.fill")
+                        .font(.callout)
+                        .foregroundStyle(.red)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 10)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(.red.opacity(0.1), in: RoundedRectangle(cornerRadius: Theme.fieldRadius, style: .continuous))
+                        .padding()
+                        .transition(.blurReplace.combined(with: .move(edge: .bottom)))
+                        .accessibilityLabel("Erreur : \(errorMessage)")
+                }
+            }
+            .animation(.smooth(duration: 0.3), value: errorMessage)
             .navigationTitle("Nouvel objectif")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Annuler") { dismiss() }
+                    Button("Annuler", role: .cancel) { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Créer", action: createGoal)
+                        .buttonStyle(.glassProminent)
                         .keyboardShortcut(.defaultAction)
                 }
             }
@@ -119,16 +131,6 @@ struct ManualGoalFormView: View {
             task.type = existing
         } else {
             modelContext.insert(newType)
-        }
-    }
-}
-
-private extension Priority {
-    var manualFormLabel: String {
-        switch self {
-        case .high: "Haute"
-        case .medium: "Moyenne"
-        case .low: "Basse"
         }
     }
 }
